@@ -1,0 +1,46 @@
+how to connecting to the microsoft  SQL server
+
+1-  install python (last version) 
+    powershell:
+    - >> Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe -OutFile python-installer.exe
+    - >> Start-Process -Wait -FilePath python-installer.exe
+    - >> python --version
+
+2-  install pyodbc package :
+    - powershell:
+    - >> cd "C:\Users\amr fathy\AppData\Local\Programs\Python\Python311\Scripts"
+    - >> pip install pyodbc
+
+3- install microsoft ODBC SQL server:
+    in broser:
+    - URL: https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16
+    - install the driver
+        -if u have an error like (a previous installation required a reboot of the machine for changes to take effect. to proceed, restart your computer and then run setup again)
+        -type> (windows_key + R) then type> regedit.exe
+        -Open the Registry Editor (regedit.exe) and navigate to the following key:
+        -"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager"
+        -Look for a registry entry named PendingFileRenameOperations. If it exists, there might be pending file operations that require a reboot. Carefully review and consider removing the entry if it's safe to do so.
+
+4- create a DSN for Microsoft SQL Server Native Client Version 11.00.2100 and copy the *name* of it.
+    https://www.youtube.com/watch?v=eGsD3mYG2_8
+5- writh a python code that will establish the connection: connectionfile.py
+    _________________________________________________________________    
+    import pyodbc
+    myconnection = pyodbc.connect(
+        DSN='*name*',
+        server='server name',
+        database='DB name',
+        driver='{ODBC Driver 18 for SQL Server}'
+        # username='server name\\user',
+        # password='*********',
+        )
+        with open('SQL file.sql', 'r') as file:
+            BD_file = file.read()
+
+    cursor = myconnection.cursor()
+    cursor.execute(BD_file)
+    print("Query execution confirmed!")
+    myconnection.commit()
+    myconnection.close()
+    _________________________________________________________________  
+6- powershell run >> python .connectionfile.py
